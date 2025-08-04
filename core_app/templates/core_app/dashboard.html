@@ -1,0 +1,300 @@
+{% extends 'core_app/base.html' %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block content %}
+<div class="py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-semibold text-gray-900">Welcome back, {{ user.username }}!</h1>
+            <p class="mt-1 text-sm text-gray-500">
+                Here's what's happening with your workspace today
+            </p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="mt-8">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {% if user.userprofile.role == 'member' %}
+                    <!-- Member Dashboard Stats -->
+                    <!-- Active Subscription -->
+                    <div class="glass-card hover-card rounded-lg shadow-sm">
+                        <div class="px-5 py-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-gray-900">Active Subscription</h3>
+                                    {% if active_subscription %}
+                                        <p class="mt-1 text-lg font-semibold text-primary-600">
+                                            {{ active_subscription.plan.name }}
+                                        </p>
+                                        <p class="mt-1 text-sm text-gray-500">
+                                            Expires: {{ active_subscription.end_date }}
+                                        </p>
+                                    {% else %}
+                                        <p class="mt-1 text-sm text-gray-500">No active subscription</p>
+                                        <a href="{% url 'subscription_create' %}" class="mt-2 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500">
+                                            Get a subscription
+                                            <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Bookings -->
+                    <div class="glass-card hover-card rounded-lg shadow-sm">
+                        <div class="px-5 py-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-gray-900">My Bookings</h3>
+                                    <p class="mt-1 text-lg font-semibold text-primary-600">
+                                        {{ bookings.count }}
+                                    </p>
+                                    <a href="{% url 'booking_list' %}" class="mt-2 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500">
+                                        View my bookings
+                                        <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available Resources -->
+                    <div class="glass-card hover-card rounded-lg shadow-sm">
+                        <div class="px-5 py-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-gray-900">Available Resources</h3>
+                                    <p class="mt-1 text-lg font-semibold text-primary-600">Browse & Book</p>
+                                    <a href="{% url 'resource_list' %}" class="mt-2 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500">
+                                        View resources
+                                        <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% elif user.userprofile.role in 'staff,admin' %}
+                    <!-- Staff/Admin Dashboard Stats -->
+                    <!-- Pending Bookings -->
+                    <div class="glass-card hover-card rounded-lg shadow-sm">
+                        <div class="px-5 py-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-gray-900">Pending Bookings</h3>
+                                    <p class="mt-1 text-lg font-semibold text-yellow-600">
+                                        {{ pending_bookings }}
+                                    </p>
+                                    <a href="{% url 'booking_list' %}?status=pending" class="mt-2 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500">
+                                        Review bookings
+                                        <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Leases -->
+                    <div class="glass-card hover-card rounded-lg shadow-sm">
+                        <div class="px-5 py-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-gray-900">Active Leases</h3>
+                                    <p class="mt-1 text-lg font-semibold text-green-600">
+                                        {{ active_leases }}
+                                    </p>
+                                    <a href="{% url 'lease_list' %}" class="mt-2 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500">
+                                        Manage leases
+                                        <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Maintenance Resources -->
+                    <div class="glass-card hover-card rounded-lg shadow-sm">
+                        <div class="px-5 py-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-gray-900">In Maintenance</h3>
+                                    <p class="mt-1 text-lg font-semibold text-red-600">
+                                        {{ maintenance_resources }}
+                                    </p>
+                                    <a href="{% url 'resource_list' %}?status=maintenance" class="mt-2 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500">
+                                        View resources
+                                        <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="mt-8">
+            <div class="glass-card rounded-lg shadow-sm">
+                <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">
+                        {% if user.userprofile.role == 'member' %}
+                            My Recent Bookings
+                        {% else %}
+                            Recent Bookings (All Users)
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="px-4 py-5 sm:p-6">
+                    {% if bookings %}
+                        <div class="flow-root">
+                            <ul class="-my-5 divide-y divide-gray-200">
+                                {% for booking in bookings %}
+                                    <li class="py-5">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900 truncate">
+                                                    {{ booking.resource.name }}
+                                                </p>
+                                                <p class="text-sm text-gray-500">
+                                                    {{ booking.start_time|date:"F j, Y, g:i a" }} - {{ booking.end_time|date:"g:i a" }}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium
+                                                    {% if booking.status == 'pending' %}
+                                                        bg-yellow-100 text-yellow-800
+                                                    {% elif booking.status == 'approved' %}
+                                                        bg-green-100 text-green-800
+                                                    {% elif booking.status == 'cancelled' %}
+                                                        bg-red-100 text-red-800
+                                                    {% elif booking.status == 'completed' %}
+                                                        bg-blue-100 text-blue-800
+                                                    {% endif %}
+                                                ">
+                                                    {{ booking.get_status_display }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% if bookings.count > 5 %}
+                            <div class="mt-6">
+                                <a href="{% url 'booking_list' %}" class="w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    View all bookings
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-sm text-gray-500">No bookings yet</p>
+                            <a href="{% url 'resource_list' %}" class="mt-3 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                                Browse Resources
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if user.userprofile.role in 'staff,admin' %}
+        <!-- Quick Actions -->
+        <div class="mt-8">
+            <div class="glass-card rounded-lg shadow-sm">
+                <div class="px-4 py-5 sm:p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <a href="{% url 'resource_create' %}" class="hover-card relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-500">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <span class="absolute inset-0" aria-hidden="true"></span>
+                                <p class="text-sm font-medium text-gray-900">Add Resource</p>
+                                <p class="text-sm text-gray-500">Create a new resource</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'booking_list' %}?status=pending" class="hover-card relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-500">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <span class="absolute inset-0" aria-hidden="true"></span>
+                                <p class="text-sm font-medium text-gray-900">Pending Bookings</p>
+                                <p class="text-sm text-gray-500">Review and approve bookings</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'user_list' %}" class="hover-card relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-primary-500">
+                            <div class="flex-shrink-0">
+                                <svg class="h-6 w-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <span class="absolute inset-0" aria-hidden="true"></span>
+                                <p class="text-sm font-medium text-gray-900">User Management</p>
+                                <p class="text-sm text-gray-500">Manage all users</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,107 @@
+{% extends 'core_app/base.html' %}
+
+{% block title %}Create Subscription{% endblock title %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold leading-tight text-gray-900">
+                Create New Subscription
+            </h1>
+            <p class="mt-2 text-sm text-gray-600">
+                Choose your membership plan and subscription details.
+            </p>
+        </div>
+
+        <!-- Subscription Form -->
+        <div class="glass-card bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="rounded-md bg-red-50 p-4 mb-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">
+                                        There were errors with your submission
+                                    </h3>
+                                    <div class="mt-2 text-sm text-red-700">
+                                        <ul class="list-disc pl-5 space-y-1">
+                                            {% for error in form.non_field_errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Membership Plan -->
+                    <div>
+                        <label for="{{ form.plan.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Membership Plan
+                        </label>
+                        <div class="mt-1">
+                            {{ form.plan }}
+                        </div>
+                        {% if form.plan.errors %}
+                            <p class="mt-2 text-sm text-red-600">
+                                {{ form.plan.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Start Date -->
+                    <div>
+                        <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Start Date
+                        </label>
+                        <div class="mt-1">
+                            {{ form.start_date }}
+                        </div>
+                        {% if form.start_date.errors %}
+                            <p class="mt-2 text-sm text-red-600">
+                                {{ form.start_date.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- End Date -->
+                    <div>
+                        <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            End Date
+                        </label>
+                        <div class="mt-1">
+                            {{ form.end_date }}
+                        </div>
+                        {% if form.end_date.errors %}
+                            <p class="mt-2 text-sm text-red-600">
+                                {{ form.end_date.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end">
+                        <a href="{% url 'subscription_list' %}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 mr-3">
+                            Cancel
+                        </a>
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Create Subscription
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

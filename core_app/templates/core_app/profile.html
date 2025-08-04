@@ -1,0 +1,139 @@
+{% extends 'core_app/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-5 sm:p-6">
+            <div class="flex flex-col md:flex-row md:space-x-6">
+                <!-- Profile Picture Section -->
+                <div class="flex-shrink-0 mb-4 md:mb-0">
+                    {% if user.userprofile.profile_picture %}
+                        <img class="h-32 w-32 rounded-full object-cover" src="{{ user.userprofile.profile_picture.url }}" alt="Profile picture">
+                    {% else %}
+                        <div class="h-32 w-32 rounded-full bg-primary-500 flex items-center justify-center text-white text-4xl">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Profile Information -->
+                <div class="flex-grow">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        {{ user.get_full_name|default:user.username }}
+                    </h2>
+                    
+                    <dl class="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Email</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ user.email|default:"No email provided" }}</dd>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Phone</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ user.userprofile.phone|default:"No phone number provided" }}</dd>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Role</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ user.userprofile.role|title|default:"Member" }}</dd>
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Membership Plan</dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                {% if user.userprofile.membership_plan %}
+                                    {{ user.userprofile.membership_plan.name }}
+                                {% else %}
+                                    No active membership plan
+                                {% endif %}
+                            </dd>
+                        </div>
+
+                        {% if user.userprofile.company_name %}
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Company</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ user.userprofile.company_name }}</dd>
+                        </div>
+                        {% endif %}
+
+                        {% if user.userprofile.bio %}
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Bio</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ user.userprofile.bio }}</dd>
+                        </div>
+                        {% endif %}
+                    </dl>
+
+                    <!-- Edit Profile Button -->
+                    <div class="mt-6">
+                        <a href="{% url 'edit_profile' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Membership & Booking Statistics -->
+    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg font-medium text-gray-900">Membership Status</h3>
+                {% if user.userprofile.membership_plan %}
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-500">Plan</p>
+                        <p class="mt-1 text-lg font-semibold text-primary-600">{{ user.userprofile.membership_plan.name }}</p>
+                        
+                        <p class="mt-4 text-sm text-gray-500">Valid Until</p>
+                        <p class="mt-1 text-lg font-semibold text-gray-900">
+                            {% if user.userprofile.membership_end_date %}
+                                {{ user.userprofile.membership_end_date|date:"F j, Y" }}
+                            {% else %}
+                                Ongoing
+                            {% endif %}
+                        </p>
+                    </div>
+                {% else %}
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-500">No active membership plan</p>
+                        <a href="{% url 'membership_plans' %}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            View Plans
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+                <div class="mt-4">
+                    {% if user.booking_set.exists %}
+                        <div class="space-y-4">
+                            {% for booking in user.booking_set.all|slice:":3" %}
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">{{ booking.resource.name }}</p>
+                                        <p class="text-sm text-gray-500">{{ booking.start_time|date:"F j, Y" }}</p>
+                                    </div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if booking.status == 'confirmed' %}bg-green-100 text-green-800{% elif booking.status == 'pending' %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                        {{ booking.status|title }}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-sm text-gray-500">No recent bookings</p>
+                        <a href="{% url 'resource_list' %}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                            Browse Resources
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

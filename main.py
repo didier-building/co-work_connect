@@ -1,5 +1,5 @@
 def main():
-    print("Hello from co-work-connect!")
+    print("Hello from space-flow!")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,121 @@
+{% extends 'core_app/base.html' %}
+
+{% block title %}Book {{ resource.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-5 sm:p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Book {{ resource.name }}</h2>
+            
+            <!-- Resource Info -->
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900">{{ resource.name }}</h3>
+                        <p class="text-sm text-gray-600">{{ resource.get_type_display }} • {{ resource.location }}</p>
+                        {% if resource.price_per_hour %}
+                            <p class="text-sm text-gray-600">${{ resource.price_per_hour }}/hour</p>
+                        {% endif %}
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        {{ resource.get_status_display }}
+                    </span>
+                </div>
+            </div>
+            
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Hidden Resource Field -->
+                <input type="hidden" name="resource" value="{{ resource.id }}">
+                
+                <!-- Date and Time Selection -->
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="{{ form.start_time.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Start Time
+                        </label>
+                        {{ form.start_time }}
+                        {% if form.start_time.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.start_time.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.end_time.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            End Time
+                        </label>
+                        {{ form.end_time }}
+                        {% if form.end_time.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.end_time.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div>
+                    <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Additional Notes (Optional)
+                    </label>
+                    {{ form.notes }}
+                    <p class="mt-1 text-sm text-gray-500">
+                        Any special requirements or notes for your booking
+                    </p>
+                    {% if form.notes.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.notes.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Booking Summary -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-blue-900 mb-2">Booking Summary</h4>
+                    <div class="text-sm text-blue-800">
+                        <p><strong>Resource:</strong> {{ resource.name }}</p>
+                        <p><strong>Type:</strong> {{ resource.get_type_display }}</p>
+                        <p><strong>Location:</strong> {{ resource.location }}</p>
+                        {% if resource.price_per_hour %}
+                            <p><strong>Rate:</strong> ${{ resource.price_per_hour }}/hour</p>
+                        {% endif %}
+                        <p class="mt-2 text-xs text-blue-600">
+                            Your booking will be reviewed and approved by our staff. You'll receive a confirmation email once approved.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Error Messages -->
+                {% if form.non_field_errors %}
+                    <div class="rounded-md bg-red-50 p-4">
+                        <div class="flex">
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">
+                                    Please correct the following errors:
+                                </h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <ul class="list-disc pl-5 space-y-1">
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-4">
+                    <a href="{% url 'resource_detail' resource.id %}" 
+                        class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        Submit Booking Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 
